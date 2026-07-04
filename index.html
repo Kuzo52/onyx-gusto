@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Onyx &amp; Gusto — мишленовский ресторан авторской кухни в&nbsp;сердце Москвы.">
+  <meta name="theme-color" content="#050505">
+  <title>Onyx &amp; Gusto — Мишленовский ресторан</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+          },
+          colors: {
+            onyx: { 950: '#050505', 900: '#0a0a0a', 800: '#121212', 700: '#1a1a1a' },
+            gold: { DEFAULT: '#c9a962', light: '#e8d5a3', glow: '#f0d78c' },
+          },
+          borderRadius: { squircle: '16px', 'squircle-lg': '24px' },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --ease-snappy: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-fluid: cubic-bezier(0.4, 0, 0.2, 1);
+      --gold: #c9a962;
+      --gold-glow: rgba(201, 169, 98, 0.45);
+      --safe-b: env(safe-area-inset-bottom, 0px);
+      --safe-t: env(safe-area-inset-top, 0px);
+      --dock-h: 7.75rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      overflow-x: hidden;
+      background: #050505;
+      color: #f5f5f5;
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      padding-bottom: calc(var(--dock-h) + var(--safe-b));
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-gold {
+      background: rgba(201, 169, 98, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(201, 169, 98, 0.18);
+    }
+
+    .glow-gold { box-shadow: 0 0 40px rgba(201, 169, 98, 0.15), 0 0 80px rgba(201, 169, 98, 0.05); }
+    .text-glow { text-shadow: 0 0 30px var(--gold-glow); }
+
+    .tap:active { transform: scale(0.96); }
+    .tap { transition: transform 0.2s var(--ease-snappy); }
+
+    .btn-interactive {
+      transition: transform 0.2s var(--ease-snappy), background 0.3s var(--ease-fluid), border-color 0.3s var(--ease-fluid), box-shadow 0.3s var(--ease-fluid);
+    }
+    .btn-interactive:active { transform: scale(0.96); }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.8s var(--ease-snappy) forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+    .delay-4 { animation-delay: 0.5s; }
+    .delay-5 { animation-delay: 0.65s; }
+
+    .page { display: none; min-height: 100dvh; }
+    .page.active { display: block; }
+
+    .section-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(201, 169, 98, 0.75);
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.875rem, 5vw, 2.5rem);
+      line-height: 1.1;
+      color: #fff;
+    }
+
+    .nav-link.active, .tab-nav-btn.active { color: var(--gold); }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold-glow);
+    }
+
+    .tab-btn.active {
+      background: rgba(201, 169, 98, 0.15);
+      border-color: rgba(201, 169, 98, 0.4);
+      color: #e8d5a3;
+      box-shadow: 0 0 20px rgba(201, 169, 98, 0.12);
+    }
+
+    .bento-card {
+      transition: transform 0.5s var(--ease-snappy), opacity 0.4s var(--ease-fluid);
+      will-change: transform, opacity;
+    }
+
+    .bento-card.hidden-card {
+      opacity: 0;
+      transform: scale(0.92);
+      pointer-events: none;
+      position: absolute;
+      visibility: hidden;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: minmax(140px, auto);
+      gap: 12px;
+      position: relative;
+    }
+
+    @media (min-width: 640px) {
+      .bento-grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: minmax(160px, auto);
+        gap: 16px;
+      }
+    }
+
+    .bento-span-2 { grid-column: span 2; }
+    .bento-span-2-row { grid-column: span 2; grid-row: span 2; }
+    .bento-tall { grid-row: span 2; }
+
+    .modal-overlay {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s var(--ease-fluid), visibility 0.4s;
+    }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+
+    .modal-sheet {
+      transform: translateY(100%);
+      transition: transform 0.5s var(--ease-snappy);
+    }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+
+    .modal-handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 auto 12px;
+    }
+
+    .picker-btn.selected, .zone-btn.selected {
+      background: rgba(201, 169, 98, 0.2);
+      border-color: rgba(201, 169, 98, 0.5);
+      color: #e8d5a3;
+      box-shadow: 0 0 16px rgba(201, 169, 98, 0.2);
+    }
+
+    .book-step { display: none; }
+    .book-step.active { display: block; animation: fadeUp 0.4s var(--ease-snappy) forwards; }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      transition: all 0.3s var(--ease-snappy);
+    }
+    .step-dot.active { width: 24px; border-radius: 4px; background: var(--gold); }
+    .step-dot.done { background: rgba(201, 169, 98, 0.5); }
+
+    .guest-stepper button {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s var(--ease-fluid), box-shadow 0.3s var(--ease-fluid);
+    }
+    .input-field:focus {
+      border-color: rgba(201, 169, 98, 0.5);
+      box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.12);
+    }
+    .input-field::placeholder { color: rgba(255, 255, 255, 0.3); }
+    .input-field.invalid { border-color: rgba(196, 30, 58, 0.6); }
+
+    .mobile-nav {
+      transform: translateX(100%);
+      transition: transform 0.45s var(--ease-snappy);
+    }
+    .mobile-nav.open { transform: translateX(0); }
+
+    .star-michelin { color: #c41e3a; filter: drop-shadow(0 0 6px rgba(196, 30, 58, 0.5)); }
+
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .mobile-dock {
+      padding-bottom: calc(0.5rem + var(--safe-b));
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+    }
+
+    .success-check {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(201, 169, 98, 0.15);
+      border: 2px solid rgba(201, 169, 98, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      animation: scaleIn 0.5s var(--ease-snappy) forwards;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+
+    @media (min-width: 768px) {
+      body { padding-bottom: calc(5.5rem + var(--safe-b)); }
+      .mobile-tab-bar { display: none; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <header class="fixed top-0 inset-x-0 z-50 glass" style="padding-top: var(--safe-t);">
+    <div class="flex items-center justify-between px-4 sm:px-6 h-14 sm:h-16 max-w-6xl mx-auto">
+      <button type="button" id="logo-btn" class="tap flex items-center gap-2" aria-label="На&nbsp;главную">
+        <span class="font-serif text-xl sm:text-2xl font-semibold tracking-wide text-gold-light">Onyx <span class="text-white/60">&amp;</span> Gusto</span>
+      </button>
+      <nav class="hidden md:flex items-center gap-8" aria-label="Основная навигация">
+        <button type="button" data-page="home" class="nav-link relative text-sm text-white/70 hover:text-white transition-colors duration-300 active">Главная</button>
+        <button type="button" data-page="menu" class="nav-link relative text-sm text-white/70 hover:text-white transition-colors duration-300">Меню</button>
+        <button type="button" data-page="about" class="nav-link relative text-sm text-white/70 hover:text-white transition-colors duration-300">О&nbsp;нас</button>
+        <button type="button" data-page="contact" class="nav-link relative text-sm text-white/70 hover:text-white transition-colors duration-300">Контакты</button>
+      </nav>
+      <button type="button" id="header-book-btn" class="hidden md:flex btn-interactive tap items-center gap-2 px-4 py-2 rounded-squircle glass-gold text-sm text-gold-light">
+        <i class="fa-regular fa-calendar-check text-xs"></i> Бронь
+      </button>
+      <button type="button" id="menu-toggle" class="tap md:hidden w-10 h-10 flex items-center justify-center rounded-squircle glass" aria-label="Открыть меню" aria-expanded="false">
+        <i class="fa-solid fa-bars text-gold"></i>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobile-nav-overlay" class="fixed inset-0 z-[60] bg-black/60 opacity-0 invisible transition-all duration-300 md:hidden" aria-hidden="true"></div>
+  <aside id="mobile-nav" class="mobile-nav fixed top-0 right-0 z-[70] w-[min(100%,280px)] h-full glass flex flex-col pt-[calc(3.5rem+var(--safe-t))] px-6 pb-8 md:hidden" aria-hidden="true">
+    <nav class="flex flex-col gap-1" aria-label="Мобильная навигация">
+      <button type="button" data-page="home" class="mobile-nav-link tap text-left py-4 text-lg border-b border-white/5 text-gold-light">Главная</button>
+      <button type="button" data-page="menu" class="mobile-nav-link tap text-left py-4 text-lg border-b border-white/5 text-white/80">Меню</button>
+      <button type="button" data-page="about" class="mobile-nav-link tap text-left py-4 text-lg border-b border-white/5 text-white/80">О&nbsp;нас</button>
+      <button type="button" data-page="contact" class="mobile-nav-link tap text-left py-4 text-lg border-b border-white/5 text-white/80">Контакты</button>
+    </nav>
+    <button type="button" id="drawer-book-btn" class="mt-6 btn-interactive tap w-full py-3.5 rounded-squircle bg-gold text-onyx-950 font-medium text-sm">Забронировать стол</button>
+  </aside>
+
+  <main>
+
+    <!-- HOME -->
+    <section id="page-home" class="page active" aria-label="Главная" style="background: radial-gradient(120% 70% at 50% -10%, rgba(201,169,98,0.2) 0%, rgba(201,169,98,0.02) 45%, rgba(5,5,5,0.9) 100%), linear-gradient(to bottom, rgba(5,5,5,0.5) 0%, rgba(5,5,5,0.88) 55%, #050505 100%), url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1800&q=85') center/cover no-repeat;">
+      <div class="pt-[calc(3.5rem+var(--safe-t))] px-4 sm:px-6 max-w-6xl mx-auto">
+        <div class="min-h-[calc(100dvh-var(--dock-h)-3.5rem)] grid items-center py-10 sm:py-16 lg:grid-cols-[1.15fr_0.85fr] gap-6">
+          <div>
+            <div class="fade-up delay-1 inline-flex items-center gap-2 mb-5 px-3 py-2 rounded-squircle glass-gold">
+              <i class="fa-solid fa-star star-michelin text-xs"></i>
+              <i class="fa-solid fa-star star-michelin text-xs"></i>
+              <span class="text-[11px] uppercase tracking-[0.2em] text-gold-light">Две звезды Мишлен</span>
+            </div>
+            <p class="fade-up delay-1 section-eyebrow mb-3">Fine Dining · Москва</p>
+            <h1 class="fade-up delay-2 font-serif text-[clamp(2.5rem,9vw,5.25rem)] leading-[0.92] font-medium text-white text-glow mb-5">
+              Onyx <span class="text-gold-light">&amp;</span> Gusto
+            </h1>
+            <p class="fade-up delay-3 text-base sm:text-lg text-white/60 max-w-lg leading-relaxed mb-8">
+              Мишленовский ресторан в&nbsp;сердце Москвы — камерный свет, авторские курсы и&nbsp;безупречный сервис на&nbsp;уровне лучших домов Европы.
+            </p>
+            <div class="fade-up delay-4 flex flex-wrap gap-3">
+              <button type="button" data-page="menu" class="page-jump btn-interactive tap px-6 py-3.5 rounded-squircle bg-gold/90 text-onyx-950 font-medium text-sm glow-gold">Смотреть меню</button>
+              <button type="button" class="open-booking btn-interactive tap px-6 py-3.5 rounded-squircle glass text-sm text-white/90 border border-gold/20">Забронировать стол</button>
+            </div>
+          </div>
+          <article class="fade-up delay-3 glass rounded-squircle-lg p-4 sm:p-5 glow-gold">
+            <div class="rounded-squircle-lg overflow-hidden mb-4 ring-1 ring-gold/10">
+              <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&amp;fit=crop&amp;w=800&amp;q=85" alt="Фирменная подача Onyx &amp; Gusto" width="800" height="500" loading="eager" class="w-full aspect-[4/3] object-cover">
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <p class="section-eyebrow">Signature Course</p>
+              <span class="text-xs text-white/45">7&nbsp;курсов</span>
+            </div>
+            <h2 class="font-serif text-2xl text-white mb-2">Театр вкуса «Onyx»</h2>
+            <p class="text-sm text-white/55 leading-relaxed mb-4">Персональная дегустация с&nbsp;винным сопровождением от&nbsp;сомелье и&nbsp;финальной подачей у&nbsp;стола.</p>
+            <button type="button" class="open-booking btn-interactive tap w-full py-3 rounded-squircle glass-gold text-sm text-gold-light">Забронировать дегустацию</button>
+          </article>
+        </div>
+
+        <div class="fade-up delay-5 grid grid-cols-2 sm:grid-cols-4 gap-3 pb-10">
+          <article class="glass-gold rounded-squircle-lg p-5 text-center">
+            <p class="font-serif text-3xl text-gold-light mb-1">2018</p>
+            <p class="text-[11px] text-white/45 uppercase tracking-wider">Год открытия</p>
+          </article>
+          <article class="glass rounded-squircle-lg p-5 text-center">
+            <p class="font-serif text-3xl text-gold-light mb-1">48</p>
+            <p class="text-[11px] text-white/45 uppercase tracking-wider">Мест в&nbsp;зале</p>
+          </article>
+          <article class="glass rounded-squircle-lg p-5 text-center">
+            <p class="font-serif text-3xl text-gold-light mb-1">7</p>
+            <p class="text-[11px] text-white/45 uppercase tracking-wider">Курсов дегустации</p>
+          </article>
+          <article class="glass rounded-squircle-lg p-5 text-center col-span-2 sm:col-span-1">
+            <p class="font-serif text-3xl text-gold-light mb-1">94</p>
+            <p class="text-[11px] text-white/45 uppercase tracking-wider">Балла Wine Spectator</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU -->
+    <section id="page-menu" class="page" aria-label="Меню">
+      <div class="pt-[calc(3.5rem+var(--safe-t))] px-4 sm:px-6 max-w-6xl mx-auto pb-16">
+        <header class="py-10 sm:py-14 border-b border-white/5 mb-8">
+          <p class="section-eyebrow mb-3">Onyx &amp; Gusto</p>
+          <h2 class="section-title mb-3">Кулинарная галерея</h2>
+          <p class="text-white/50 text-sm max-w-lg leading-relaxed">Каждое блюдо — результат месяцев исследований и&nbsp;безупречного мастерства шефа Андрея Вольского.</p>
+        </header>
+
+        <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-4 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="Фильтр меню">
+          <button type="button" role="tab" aria-selected="true" data-filter="masterpieces" class="tab-btn btn-interactive tap flex-shrink-0 px-5 py-2.5 rounded-squircle glass text-sm text-white/70 border border-transparent active">Шедевры</button>
+          <button type="button" role="tab" aria-selected="false" data-filter="desserts" class="tab-btn btn-interactive tap flex-shrink-0 px-5 py-2.5 rounded-squircle glass text-sm text-white/70 border border-transparent">Десерты</button>
+          <button type="button" role="tab" aria-selected="false" data-filter="wines" class="tab-btn btn-interactive tap flex-shrink-0 px-5 py-2.5 rounded-squircle glass text-sm text-white/70 border border-transparent">Карта вин</button>
+        </div>
+
+        <div id="bento-grid" class="bento-grid" role="tabpanel">
+          <article class="bento-card bento-span-2-row glass-gold rounded-squircle-lg overflow-hidden relative group" data-category="masterpieces">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-onyx-950/40 to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&amp;fit=crop&amp;w=800&amp;q=85" alt="Тартар из&nbsp;тунца" width="800" height="600" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" style="transition-timing-function: cubic-bezier(0.4,0,0.2,1);">
+            <div class="relative z-20 p-5 h-full flex flex-col justify-end">
+              <span class="section-eyebrow mb-1 block">Фирменное</span>
+              <h3 class="font-serif text-2xl text-white mb-1">Тартар из&nbsp;тунца</h3>
+              <p class="text-sm text-white/50">Авокадо, юдзу, икра тобико — 4&nbsp;200&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative group bento-tall" data-category="masterpieces">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-transparent to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&amp;fit=crop&amp;w=400&amp;q=85" alt="Утиная грудка" width="400" height="500" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50">
+            <div class="relative z-20 p-4 h-full flex flex-col justify-end">
+              <h3 class="font-serif text-lg text-white">Утиная грудка</h3>
+              <p class="text-xs text-white/45 mt-1">Вишнёвый глазурь — 3&nbsp;800&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative group" data-category="masterpieces">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-transparent to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&amp;fit=crop&amp;w=400&amp;q=85" alt="Ризотто с&nbsp;трюфелем" width="400" height="300" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50">
+            <div class="relative z-20 p-4 h-full flex flex-col justify-end min-h-[140px]">
+              <h3 class="font-serif text-lg text-white">Ризотто с&nbsp;трюфелем</h3>
+              <p class="text-xs text-white/45 mt-1">Пармезан 36&nbsp;мес. — 3&nbsp;200&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card bento-span-2 glass rounded-squircle-lg overflow-hidden relative group" data-category="masterpieces">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-onyx-950/30 to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&amp;fit=crop&amp;w=800&amp;q=85" alt="Дегустационный сет" width="800" height="400" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-45">
+            <div class="relative z-20 p-5 flex flex-col justify-end min-h-[140px]">
+              <span class="section-eyebrow mb-1 block">7&nbsp;курсов</span>
+              <h3 class="font-serif text-xl text-white">Дегустационный сет «Оникс»</h3>
+              <p class="text-sm text-white/50 mt-1">Полное погружение — 12&nbsp;500&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative group" data-category="masterpieces">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-transparent to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&amp;fit=crop&amp;w=400&amp;q=85" alt="Лосось су-вид" width="400" height="300" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50">
+            <div class="relative z-20 p-4 h-full flex flex-col justify-end min-h-[140px]">
+              <h3 class="font-serif text-lg text-white">Лосось су-вид</h3>
+              <p class="text-xs text-white/45 mt-1">Спаржа, беарнез — 3&nbsp;600&nbsp;₽</p>
+            </div>
+          </article>
+
+          <article class="bento-card bento-span-2 glass-gold rounded-squircle-lg overflow-hidden relative group hidden-card" data-category="desserts">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-onyx-950/40 to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&amp;fit=crop&amp;w=800&amp;q=85" alt="Шоколадный фондан" width="800" height="400" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-55">
+            <div class="relative z-20 p-5 flex flex-col justify-end min-h-[160px]">
+              <span class="section-eyebrow mb-1 block">Бестселлер</span>
+              <h3 class="font-serif text-2xl text-white">Шоколадный фондан</h3>
+              <p class="text-sm text-white/50">Валлонский шоколад, мороженое — 1&nbsp;800&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative group bento-tall hidden-card" data-category="desserts">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-transparent to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1481391319762-47dff72954d9?auto=format&amp;fit=crop&amp;w=400&amp;q=85" alt="Тарт татен" width="400" height="500" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50">
+            <div class="relative z-20 p-4 h-full flex flex-col justify-end">
+              <h3 class="font-serif text-lg text-white">Тарт татен</h3>
+              <p class="text-xs text-white/45 mt-1">Карамель, крем-фреш — 1&nbsp;400&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative group hidden-card" data-category="desserts">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-transparent to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&amp;fit=crop&amp;w=400&amp;q=85" alt="Панна-котта" width="400" height="300" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50">
+            <div class="relative z-20 p-4 h-full flex flex-col justify-end min-h-[140px]">
+              <h3 class="font-serif text-lg text-white">Панна-котта</h3>
+              <p class="text-xs text-white/45 mt-1">Ваниль, ягодный кули — 1&nbsp;200&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative group hidden-card" data-category="desserts">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-transparent to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&amp;fit=crop&amp;w=400&amp;q=85" alt="Мильфей" width="400" height="300" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-50">
+            <div class="relative z-20 p-4 h-full flex flex-col justify-end min-h-[140px]">
+              <h3 class="font-serif text-lg text-white">Мильфей</h3>
+              <p class="text-xs text-white/45 mt-1">Заварной крем, фисташка — 1&nbsp;600&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card bento-span-2 glass-gold rounded-squircle-lg p-5 flex flex-col justify-center hidden-card" data-category="desserts">
+            <i class="fa-solid fa-cake-candles text-gold/40 text-2xl mb-3"></i>
+            <h3 class="font-serif text-xl text-white mb-2">Десертная карта</h3>
+            <p class="text-sm text-white/45 leading-relaxed">Все десерты готовятся ежедневно нашим кондитером Еленой Марковой.</p>
+          </article>
+
+          <article class="bento-card bento-span-2-row glass-gold rounded-squircle-lg overflow-hidden relative group hidden-card" data-category="wines">
+            <div class="absolute inset-0 bg-gradient-to-t from-onyx-950 via-onyx-950/50 to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&amp;fit=crop&amp;w=800&amp;q=85" alt="Burgundy Grand Cru" width="800" height="600" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-45">
+            <div class="relative z-20 p-5 h-full flex flex-col justify-end">
+              <span class="section-eyebrow mb-1 block">Burgundy, 2018</span>
+              <h3 class="font-serif text-2xl text-white mb-1">Romanée-Conti</h3>
+              <p class="text-sm text-white/50">Пино нуар, бокал — 18&nbsp;000&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative p-5 flex flex-col justify-between hidden-card" data-category="wines" style="background-image: linear-gradient(to top, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.55) 100%), url('https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?auto=format&amp;fit=crop&amp;w=400&amp;q=85'); background-size: cover; background-position: center;">
+            <i class="fa-solid fa-wine-glass text-gold/50 text-xl relative z-10"></i>
+            <div class="relative z-10">
+              <h3 class="font-serif text-lg text-white">Chablis Premier Cru</h3>
+              <p class="text-xs text-white/45 mt-1">Шабли, 2021 — 2&nbsp;400&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative p-5 flex flex-col justify-between bento-tall hidden-card" data-category="wines" style="background-image: linear-gradient(to top, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.5) 100%), url('https://images.unsplash.com/photo-1547595628-c61a29f496f0?auto=format&amp;fit=crop&amp;w=400&amp;q=85'); background-size: cover; background-position: center;">
+            <i class="fa-solid fa-champagne-glasses text-gold/50 text-xl relative z-10"></i>
+            <div class="relative z-10">
+              <h3 class="font-serif text-lg text-white">Dom Pérignon</h3>
+              <p class="text-xs text-white/45 mt-1">Шампанское, 2012 — 32&nbsp;000&nbsp;₽</p>
+            </div>
+          </article>
+          <article class="bento-card bento-span-2 glass-gold rounded-squircle-lg p-5 hidden-card" data-category="wines">
+            <div class="flex items-start gap-4">
+              <i class="fa-solid fa-book-open text-gold/40 text-xl mt-1"></i>
+              <div>
+                <h3 class="font-serif text-xl text-white mb-2">Винный погреб</h3>
+                <p class="text-sm text-white/45 leading-relaxed">Более 400&nbsp;позиций от&nbsp;молодых виноделов Бургундии до&nbsp;легендарных крю.</p>
+              </div>
+            </div>
+          </article>
+          <article class="bento-card glass rounded-squircle-lg overflow-hidden relative p-5 flex flex-col justify-between hidden-card" data-category="wines" style="background-image: linear-gradient(to top, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.55) 100%), url('https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&amp;fit=crop&amp;w=400&amp;q=85'); background-size: cover; background-position: center;">
+            <i class="fa-solid fa-wine-bottle text-gold/50 text-xl relative z-10"></i>
+            <div class="relative z-10">
+              <h3 class="font-serif text-lg text-white">Barolo Riserva</h3>
+              <p class="text-xs text-white/45 mt-1">Пьемонт, 2016 — 8&nbsp;500&nbsp;₽</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="page-about" class="page" aria-label="О&nbsp;нас">
+      <div class="pt-[calc(3.5rem+var(--safe-t))] px-4 sm:px-6 max-w-6xl mx-auto pb-16">
+        <header class="py-10 sm:py-14 border-b border-white/5 mb-8">
+          <p class="section-eyebrow mb-3">Onyx &amp; Gusto</p>
+          <h2 class="section-title">Там, где встречаются огонь и&nbsp;изысканность</h2>
+        </header>
+
+        <div class="grid sm:grid-cols-2 gap-4 mb-8">
+          <article class="glass rounded-squircle-lg overflow-hidden ring-1 ring-white/5">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&amp;fit=crop&amp;w=700&amp;q=85" alt="Интерьер ресторана Onyx &amp; Gusto" width="700" height="450" loading="lazy" class="w-full aspect-[4/3] object-cover">
+          </article>
+          <article class="glass-gold rounded-squircle-lg p-6 sm:p-8 flex flex-col justify-center glow-gold">
+            <h3 class="font-serif text-2xl text-gold-light mb-4">История дома</h3>
+            <p class="text-sm text-white/55 leading-relaxed mb-4">«Onyx &amp; Gusto» открылся в&nbsp;2018&nbsp;году как пространство, где московская энергия встречается с&nbsp;европейской классикой. За&nbsp;шесть лет мы&nbsp;завоевали две звезды Мишлен и&nbsp;сердца гостей со&nbsp;всего мира.</p>
+            <p class="text-sm text-white/55 leading-relaxed">Наш зал на&nbsp;48&nbsp;мест спроектирован так, чтобы каждый ужин ощущался как&nbsp;личная встреча с&nbsp;искусством.</p>
+          </article>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-3 mb-10">
+          <article class="glass-gold rounded-squircle-lg p-6 text-center glow-gold">
+            <i class="fa-solid fa-fire-burner text-gold text-2xl mb-4"></i>
+            <h3 class="font-serif text-lg text-white mb-2">Огонь</h3>
+            <p class="text-xs text-white/45 leading-relaxed">Живой огонь и&nbsp;уголь — основа каждого блюда на&nbsp;открытой кухне.</p>
+          </article>
+          <article class="glass rounded-squircle-lg p-6 text-center">
+            <i class="fa-solid fa-leaf text-gold text-2xl mb-4"></i>
+            <h3 class="font-serif text-lg text-white mb-2">Происхождение</h3>
+            <p class="text-xs text-white/45 leading-relaxed">Продукты от&nbsp;фермеров Подмосковья и&nbsp;поставщиков с&nbsp;лучших рынков Европы.</p>
+          </article>
+          <article class="glass rounded-squircle-lg p-6 text-center sm:col-span-1 col-span-2">
+            <i class="fa-solid fa-hand-sparkles text-gold text-2xl mb-4"></i>
+            <h3 class="font-serif text-lg text-white mb-2">Мастерство</h3>
+            <p class="text-xs text-white/45 leading-relaxed">Команда из&nbsp;24&nbsp;поваров под руководством шефа Андрея Вольского.</p>
+          </article>
+        </div>
+
+        <article class="glass rounded-squircle-lg p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center ring-1 ring-gold/10">
+          <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-squircle-lg overflow-hidden flex-shrink-0 ring-2 ring-gold/25">
+            <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&amp;fit=crop&amp;w=300&amp;q=85" alt="Шеф-повар Андрей Вольский" width="300" height="300" loading="lazy" class="w-full h-full object-cover">
+          </div>
+          <div class="text-center sm:text-left">
+            <p class="section-eyebrow mb-2">Шеф-повар</p>
+            <h3 class="font-serif text-2xl sm:text-3xl text-white mb-3">Андрей Вольский</h3>
+            <p class="text-sm text-white/50 leading-relaxed max-w-lg">Бывший су-шеф ресторана «Noma» в&nbsp;Копенгагене. Его кухня — диалог между скандинавским минимализмом и&nbsp;русской щедростью.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="page-contact" class="page" aria-label="Контакты">
+      <div class="pt-[calc(3.5rem+var(--safe-t))] px-4 sm:px-6 max-w-6xl mx-auto pb-16">
+        <header class="py-10 sm:py-14 border-b border-white/5 mb-8">
+          <p class="section-eyebrow mb-3">Onyx &amp; Gusto</p>
+          <h2 class="section-title mb-3">Ждём вас в&nbsp;гости</h2>
+          <p class="text-white/50 text-sm">Забронируйте стол онлайн или свяжитесь с&nbsp;нами напрямую.</p>
+        </header>
+
+        <div class="grid sm:grid-cols-2 gap-4 mb-8">
+          <article class="glass-gold rounded-squircle-lg p-6 glow-gold">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-11 h-11 rounded-squircle glass flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-location-dot text-gold text-sm"></i></div>
+              <div>
+                <h3 class="text-sm font-medium text-white mb-1">Адрес</h3>
+                <p class="text-sm text-white/50 leading-relaxed">Москва, ул.&nbsp;Остоженка, 12<br>Павелецкая набережная</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-11 h-11 rounded-squircle glass flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-clock text-gold text-sm"></i></div>
+              <div>
+                <h3 class="text-sm font-medium text-white mb-1">Часы работы</h3>
+                <p class="text-sm text-white/50 leading-relaxed">Вт–Вс: 18:00 — 00:00<br>Пн: выходной</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-11 h-11 rounded-squircle glass flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-phone text-gold text-sm"></i></div>
+              <div>
+                <h3 class="text-sm font-medium text-white mb-1">Телефон</h3>
+                <a href="tel:+74951234567" class="text-sm text-gold-light">+7&nbsp;(495)&nbsp;123-45-67</a>
+              </div>
+            </div>
+            <button type="button" class="open-booking btn-interactive tap w-full py-3.5 rounded-squircle bg-gold text-onyx-950 font-medium text-sm">Забронировать стол</button>
+          </article>
+
+          <article class="glass rounded-squircle-lg overflow-hidden min-h-[280px] relative flex items-end" style="background-image: linear-gradient(to top, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.2) 60%), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;w=700&amp;q=85'); background-size: cover; background-position: center;">
+            <div class="p-6 w-full">
+              <p class="section-eyebrow mb-2">Локация</p>
+              <p class="font-serif text-xl text-white">ул.&nbsp;Остоженка, 12</p>
+              <p class="text-sm text-white/50 mt-1">5&nbsp;минут от&nbsp;метро «Кропоткинская»</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="flex gap-3 justify-center">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="tap btn-interactive w-12 h-12 rounded-squircle glass flex items-center justify-center text-white/60 hover:text-gold transition-colors" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://t.me" target="_blank" rel="noopener noreferrer" class="tap btn-interactive w-12 h-12 rounded-squircle glass flex items-center justify-center text-white/60 hover:text-gold transition-colors" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-white/5 px-4 sm:px-6 py-10 max-w-6xl mx-auto mb-4">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-10">
+      <div class="col-span-2 sm:col-span-1">
+        <p class="font-serif text-xl text-gold-light mb-3">Onyx &amp; Gusto</p>
+        <p class="text-xs text-white/35 leading-relaxed">Мишленовский ресторан авторской кухни в&nbsp;центре Москвы.</p>
+      </div>
+      <div>
+        <p class="section-eyebrow mb-3">Навигация</p>
+        <ul class="space-y-2">
+          <li><button type="button" data-page="home" class="footer-nav text-sm text-white/50 hover:text-gold-light transition-colors">Главная</button></li>
+          <li><button type="button" data-page="menu" class="footer-nav text-sm text-white/50 hover:text-gold-light transition-colors">Меню</button></li>
+          <li><button type="button" data-page="about" class="footer-nav text-sm text-white/50 hover:text-gold-light transition-colors">О&nbsp;нас</button></li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-eyebrow mb-3">Контакты</p>
+        <ul class="space-y-2 text-sm text-white/50">
+          <li>+7&nbsp;(495)&nbsp;123-45-67</li>
+          <li>info@onyxgusto.ru</li>
+        </ul>
+      </div>
+      <div>
+        <p class="section-eyebrow mb-3">Правовая информация</p>
+        <ul class="space-y-2">
+          <li><span class="text-sm text-white/40">Политика конфиденциальности</span></li>
+          <li><span class="text-sm text-white/40">Публичная оферта</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="text-xs text-white/25 text-center">©&nbsp;2026 Onyx &amp; Gusto. Все права защищены.</p>
+  </footer>
+
+  <!-- Mobile Tab Bar -->
+  <nav class="mobile-tab-bar fixed bottom-[calc(3.25rem+var(--safe-b))] inset-x-0 z-40 md:hidden px-3" aria-label="Мобильная навигация">
+    <div class="glass rounded-squircle-lg flex justify-around py-2 max-w-md mx-auto">
+      <button type="button" data-page="home" class="tab-nav-btn tap flex flex-col items-center gap-0.5 px-3 py-1.5 text-gold text-[10px] active"><i class="fa-solid fa-house text-base"></i>Главная</button>
+      <button type="button" data-page="menu" class="tab-nav-btn tap flex flex-col items-center gap-0.5 px-3 py-1.5 text-white/50 text-[10px]"><i class="fa-solid fa-utensils text-base"></i>Меню</button>
+      <button type="button" data-page="about" class="tab-nav-btn tap flex flex-col items-center gap-0.5 px-3 py-1.5 text-white/50 text-[10px]"><i class="fa-solid fa-gem text-base"></i>О&nbsp;нас</button>
+      <button type="button" data-page="contact" class="tab-nav-btn tap flex flex-col items-center gap-0.5 px-3 py-1.5 text-white/50 text-[10px]"><i class="fa-solid fa-location-dot text-base"></i>Контакты</button>
+    </div>
+  </nav>
+
+  <!-- Fixed Booking Bar -->
+  <div class="fixed bottom-0 inset-x-0 z-50 mobile-dock">
+    <div class="max-w-6xl mx-auto px-3 sm:px-4">
+      <button type="button" id="book-btn" class="open-booking btn-interactive tap w-full flex items-center justify-center gap-3 py-3.5 sm:py-4 rounded-squircle-lg bg-gold text-onyx-950 font-semibold text-sm glow-gold">
+        <i class="fa-regular fa-calendar-check"></i>
+        Забронировать стол
+      </button>
+    </div>
+  </div>
+
+  <!-- Booking Modal -->
+  <div id="booking-modal" class="modal-overlay fixed inset-0 z-[80] flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div id="modal-backdrop" class="absolute inset-0 bg-black/75" tabindex="-1"></div>
+    <div class="modal-sheet relative w-full max-w-lg glass rounded-t-squircle-lg max-h-[92dvh] overflow-hidden flex flex-col" style="border-bottom: none;">
+      <div class="flex-shrink-0 px-5 pt-3 pb-3">
+        <div class="modal-handle" aria-hidden="true"></div>
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <p class="section-eyebrow mb-1">Onyx &amp; Gusto</p>
+            <h2 id="modal-title" class="font-serif text-xl text-white">Бронирование стола</h2>
+          </div>
+          <button type="button" id="modal-close" class="tap btn-interactive w-10 h-10 rounded-squircle glass flex items-center justify-center text-white/60" aria-label="Закрыть">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div id="step-indicators" class="flex items-center gap-2 mb-2" aria-hidden="true">
+          <span class="step-dot active" data-step="0"></span>
+          <span class="step-dot" data-step="1"></span>
+          <span class="step-dot" data-step="2"></span>
+          <span class="step-dot" data-step="3"></span>
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-5 pb-4">
+        <!-- Step 1: Date & Time -->
+        <div class="book-step active" data-step="0">
+          <fieldset class="mb-6">
+            <legend class="text-xs uppercase tracking-wider text-white/40 mb-3">Дата визита</legend>
+            <div id="date-picker" class="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1" role="radiogroup" aria-label="Выбор даты"></div>
+          </fieldset>
+          <fieldset>
+            <legend class="text-xs uppercase tracking-wider text-white/40 mb-3">Время</legend>
+            <div id="time-picker" class="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Выбор времени"></div>
+          </fieldset>
+        </div>
+
+        <!-- Step 2: Guests & Zone -->
+        <div class="book-step" data-step="1">
+          <fieldset class="mb-6">
+            <legend class="text-xs uppercase tracking-wider text-white/40 mb-3">Количество гостей</legend>
+            <div class="guest-stepper flex items-center justify-center gap-6 py-4">
+              <button type="button" id="guest-minus" class="btn-interactive tap glass flex items-center justify-center text-gold text-xl" aria-label="Уменьшить количество гостей">−</button>
+              <div class="text-center min-w-[80px]">
+                <span id="guest-count" class="font-serif text-5xl text-gold-light">2</span>
+                <p id="guest-label" class="text-xs text-white/40 mt-1">гостя</p>
+              </div>
+              <button type="button" id="guest-plus" class="btn-interactive tap glass flex items-center justify-center text-gold text-xl" aria-label="Увеличить количество гостей">+</button>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend class="text-xs uppercase tracking-wider text-white/40 mb-3">Зона зала</legend>
+            <div id="zone-picker" class="grid gap-2" role="radiogroup" aria-label="Выбор зоны">
+              <button type="button" class="zone-btn btn-interactive tap w-full text-left p-4 rounded-squircle glass border border-transparent selected" data-zone="main">
+                <span class="text-sm text-white font-medium">Основной зал</span>
+                <span class="text-xs text-white/40 block mt-0.5">Камерная атмосфера, вид на&nbsp;открытую кухню</span>
+              </button>
+              <button type="button" class="zone-btn btn-interactive tap w-full text-left p-4 rounded-squircle glass border border-transparent" data-zone="bar">
+                <span class="text-sm text-white font-medium">Барная стойка</span>
+                <span class="text-xs text-white/40 block mt-0.5">Авторские коктейли и&nbsp;общение с&nbsp;барменом</span>
+              </button>
+              <button type="button" class="zone-btn btn-interactive tap w-full text-left p-4 rounded-squircle glass border border-transparent" data-zone="chef">
+                <span class="text-sm text-white font-medium">Стол шефа</span>
+                <span class="text-xs text-white/40 block mt-0.5">8&nbsp;мест, дегустационное меню</span>
+              </button>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- Step 3: Contact -->
+        <div class="book-step" data-step="2">
+          <fieldset class="space-y-4">
+            <legend class="sr-only">Контактные данные</legend>
+            <div>
+              <label for="book-name" class="text-xs uppercase tracking-wider text-white/40 mb-2 block">Ваше имя</label>
+              <input type="text" id="book-name" class="input-field" placeholder="Александр Иванов" autocomplete="name" enterkeyhint="next">
+            </div>
+            <div>
+              <label for="book-phone" class="text-xs uppercase tracking-wider text-white/40 mb-2 block">Телефон</label>
+              <input type="tel" id="book-phone" class="input-field" placeholder="+7 (999) 000-00-00" autocomplete="tel" inputmode="tel" enterkeyhint="done">
+            </div>
+            <div>
+              <label for="book-note" class="text-xs uppercase tracking-wider text-white/40 mb-2 block">Пожелания <span class="text-white/25 normal-case tracking-normal">(необязательно)</span></label>
+              <input type="text" id="book-note" class="input-field" placeholder="День рождения, аллергии…" enterkeyhint="done">
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- Step 4: Confirm -->
+        <div class="book-step" data-step="3">
+          <div id="booking-summary" class="glass-gold rounded-squircle-lg p-5 space-y-4 text-sm"></div>
+          <p class="text-xs text-white/35 text-center mt-4 leading-relaxed">Нажимая «Подтвердить», вы&nbsp;соглашаетесь с&nbsp;обработкой персональных данных.</p>
+        </div>
+
+        <!-- Success -->
+        <div class="book-step" data-step="success">
+          <div class="text-center py-8">
+            <div class="success-check"><i class="fa-solid fa-check text-2xl text-gold"></i></div>
+            <h3 class="font-serif text-2xl text-white mb-2">Бронь подтверждена</h3>
+            <p id="success-text" class="text-sm text-white/50 leading-relaxed max-w-xs mx-auto"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-shrink-0 px-5 pt-3 pb-[calc(1rem+var(--safe-b))] border-t border-white/5 flex gap-3">
+        <button type="button" id="book-back" class="btn-interactive tap hidden flex-shrink-0 px-5 py-3.5 rounded-squircle glass text-sm text-white/70">Назад</button>
+        <button type="button" id="book-next" class="btn-interactive tap flex-1 py-3.5 rounded-squircle-lg bg-gold text-onyx-950 font-semibold text-sm disabled:opacity-40 disabled:pointer-events-none" disabled>Далее</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const pages = document.querySelectorAll('.page');
+      const navLinks = document.querySelectorAll('.nav-link');
+      const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+      const tabNavBtns = document.querySelectorAll('.tab-nav-btn');
+      const pageJumps = document.querySelectorAll('[data-page]');
+      const footerNavs = document.querySelectorAll('.footer-nav');
+      const openBookingBtns = document.querySelectorAll('.open-booking');
+
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileNav = document.getElementById('mobile-nav');
+      const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+      const logoBtn = document.getElementById('logo-btn');
+      const drawerBookBtn = document.getElementById('drawer-book-btn');
+      const headerBookBtn = document.getElementById('header-book-btn');
+
+      const bookingModal = document.getElementById('booking-modal');
+      const modalBackdrop = document.getElementById('modal-backdrop');
+      const modalClose = document.getElementById('modal-close');
+      const bookBack = document.getElementById('book-back');
+      const bookNext = document.getElementById('book-next');
+      const stepIndicators = document.querySelectorAll('.step-dot');
+      const bookSteps = document.querySelectorAll('.book-step[data-step]');
+
+      const datePicker = document.getElementById('date-picker');
+      const timePicker = document.getElementById('time-picker');
+      const zonePicker = document.getElementById('zone-picker');
+      const guestCountEl = document.getElementById('guest-count');
+      const guestLabelEl = document.getElementById('guest-label');
+      const guestMinus = document.getElementById('guest-minus');
+      const guestPlus = document.getElementById('guest-plus');
+      const bookName = document.getElementById('book-name');
+      const bookPhone = document.getElementById('book-phone');
+      const bookNote = document.getElementById('book-note');
+      const bookingSummary = document.getElementById('booking-summary');
+      const successText = document.getElementById('success-text');
+
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const bentoCards = document.querySelectorAll('.bento-card');
+
+      let currentPage = 'home';
+      let bookStep = 0;
+      let lastFocus = null;
+
+      const state = {
+        date: null,
+        time: null,
+        guests: 2,
+        zone: 'main',
+        name: '',
+        phone: '',
+        note: ''
+      };
+
+      const MONTHS = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+      const MONTHS_FULL = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+      const DAYS = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+      const TIMES = ['18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00'];
+      const ZONES = { main: 'Основной зал', bar: 'Барная стойка', chef: 'Стол шефа' };
+
+      function guestWord(n) {
+        const m10 = n % 10, m100 = n % 100;
+        if (m10 === 1 && m100 !== 11) return 'гость';
+        if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return 'гостя';
+        return 'гостей';
+      }
+
+      function navigateTo(pageId) {
+        currentPage = pageId;
+        pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
+        navLinks.forEach(l => l.classList.toggle('active', l.dataset.page === pageId));
+        mobileNavLinks.forEach(l => {
+          const active = l.dataset.page === pageId;
+          l.classList.toggle('text-gold-light', active);
+          l.classList.toggle('text-white/80', !active);
+        });
+        tabNavBtns.forEach(b => {
+          const active = b.dataset.page === pageId;
+          b.classList.toggle('text-gold', active);
+          b.classList.toggle('text-white/50', !active);
+        });
+        closeMobileNav();
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+
+      function openMobileNav() {
+        mobileNav.classList.add('open');
+        mobileNavOverlay.classList.remove('invisible', 'opacity-0');
+        mobileNavOverlay.classList.add('opacity-100');
+        mobileNav.setAttribute('aria-hidden', 'false');
+        menuToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMobileNav() {
+        mobileNav.classList.remove('open');
+        mobileNavOverlay.classList.add('invisible', 'opacity-0');
+        mobileNavOverlay.classList.remove('opacity-100');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        if (!bookingModal.classList.contains('open')) document.body.style.overflow = '';
+      }
+
+      pageJumps.forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
+      footerNavs.forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
+      logoBtn.addEventListener('click', () => navigateTo('home'));
+      menuToggle.addEventListener('click', () => mobileNav.classList.contains('open') ? closeMobileNav() : openMobileNav());
+      mobileNavOverlay.addEventListener('click', closeMobileNav);
+
+      function filterMenu(category) {
+        tabBtns.forEach(btn => {
+          const active = btn.dataset.filter === category;
+          btn.classList.toggle('active', active);
+          btn.setAttribute('aria-selected', active);
+        });
+        bentoCards.forEach(card => {
+          const match = card.dataset.category === category;
+          card.classList.toggle('hidden-card', !match);
+          if (match) { card.style.position = ''; card.style.visibility = ''; }
+        });
+        requestAnimationFrame(() => {
+          bentoCards.forEach(card => {
+            if (card.dataset.category === category) {
+              card.style.animation = 'none';
+              card.offsetHeight;
+              card.style.animation = 'fadeUp 0.5s cubic-bezier(0.25,1,0.5,1) forwards';
+            }
+          });
+        });
+      }
+      tabBtns.forEach(btn => btn.addEventListener('click', () => filterMenu(btn.dataset.filter)));
+
+      function buildDatePicker() {
+        const today = new Date();
+        datePicker.innerHTML = '';
+        for (let i = 0; i < 14; i++) {
+          const d = new Date(today);
+          d.setDate(today.getDate() + i);
+          if (d.getDay() === 1) continue;
+          const iso = d.toISOString().split('T')[0];
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'picker-btn btn-interactive tap flex-shrink-0 flex flex-col items-center px-4 py-3 rounded-squircle glass text-sm border border-transparent min-w-[68px]';
+          btn.dataset.value = iso;
+          btn.setAttribute('role', 'radio');
+          btn.setAttribute('aria-checked', 'false');
+          btn.innerHTML = `<span class="text-[10px] text-white/40">${DAYS[d.getDay()]}</span><span class="font-medium text-white text-lg leading-none">${d.getDate()}</span><span class="text-[10px] text-white/40">${MONTHS[d.getMonth()]}</span>`;
+          btn.addEventListener('click', () => {
+            datePicker.querySelectorAll('.picker-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-checked', 'false'); });
+            btn.classList.add('selected');
+            btn.setAttribute('aria-checked', 'true');
+            state.date = iso;
+            validateStep();
+          });
+          datePicker.appendChild(btn);
+        }
+      }
+
+      function buildTimePicker() {
+        timePicker.innerHTML = '';
+        TIMES.forEach(time => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'picker-btn btn-interactive tap py-3 rounded-squircle glass text-sm border border-transparent text-white/70';
+          btn.dataset.value = time;
+          btn.setAttribute('role', 'radio');
+          btn.setAttribute('aria-checked', 'false');
+          btn.textContent = time;
+          btn.addEventListener('click', () => {
+            timePicker.querySelectorAll('.picker-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-checked', 'false'); });
+            btn.classList.add('selected');
+            btn.setAttribute('aria-checked', 'true');
+            state.time = time;
+            validateStep();
+          });
+          timePicker.appendChild(btn);
+        });
+      }
+
+      zonePicker.querySelectorAll('.zone-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          zonePicker.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          state.zone = btn.dataset.zone;
+        });
+      });
+
+      function updateGuests() {
+        guestCountEl.textContent = state.guests;
+        guestLabelEl.textContent = guestWord(state.guests);
+        guestMinus.disabled = state.guests <= 1;
+        guestPlus.disabled = state.guests >= 8;
+        guestMinus.style.opacity = state.guests <= 1 ? '0.3' : '1';
+        guestPlus.style.opacity = state.guests >= 8 ? '0.3' : '1';
+      }
+
+      guestMinus.addEventListener('click', () => { if (state.guests > 1) { state.guests--; updateGuests(); } });
+      guestPlus.addEventListener('click', () => { if (state.guests < 8) { state.guests++; updateGuests(); } });
+
+      function formatPhone(val) {
+        const digits = val.replace(/\D/g, '');
+        if (digits.length === 0) return '';
+        let d = digits;
+        if (d[0] === '8') d = '7' + d.slice(1);
+        if (d[0] !== '7') d = '7' + d;
+        let out = '+7';
+        if (d.length > 1) out += ' (' + d.slice(1, 4);
+        if (d.length >= 4) out += ') ' + d.slice(4, 7);
+        if (d.length >= 7) out += '-' + d.slice(7, 9);
+        if (d.length >= 9) out += '-' + d.slice(9, 11);
+        return out;
+      }
+
+      bookPhone.addEventListener('input', () => {
+        const pos = bookPhone.selectionStart;
+        bookPhone.value = formatPhone(bookPhone.value);
+        bookPhone.setSelectionRange(pos, pos);
+        state.phone = bookPhone.value;
+        bookPhone.classList.toggle('invalid', bookPhone.value.length > 0 && bookPhone.value.replace(/\D/g, '').length < 11);
+        validateStep();
+      });
+
+      bookName.addEventListener('input', () => { state.name = bookName.value.trim(); validateStep(); });
+
+      function validateStep() {
+        let valid = false;
+        if (bookStep === 0) valid = !!(state.date && state.time);
+        if (bookStep === 1) valid = state.guests >= 1;
+        if (bookStep === 2) valid = state.name.length >= 2 && state.phone.replace(/\D/g, '').length >= 11;
+        if (bookStep === 3) valid = true;
+        bookNext.disabled = !valid;
+        bookNext.textContent = bookStep === 3 ? 'Подтвердить бронь' : 'Далее';
+      }
+
+      function renderSummary() {
+        const d = new Date(state.date + 'T12:00:00');
+        bookingSummary.innerHTML = `
+          <div class="flex justify-between items-start border-b border-white/5 pb-3">
+            <span class="text-white/40">Дата</span>
+            <span class="text-gold-light text-right">${d.getDate()}&nbsp;${MONTHS_FULL[d.getMonth()]}</span>
+          </div>
+          <div class="flex justify-between items-start border-b border-white/5 pb-3">
+            <span class="text-white/40">Время</span>
+            <span class="text-white">${state.time}</span>
+          </div>
+          <div class="flex justify-between items-start border-b border-white/5 pb-3">
+            <span class="text-white/40">Гости</span>
+            <span class="text-white">${state.guests}&nbsp;${guestWord(state.guests)}</span>
+          </div>
+          <div class="flex justify-between items-start border-b border-white/5 pb-3">
+            <span class="text-white/40">Зона</span>
+            <span class="text-white text-right">${ZONES[state.zone]}</span>
+          </div>
+          <div class="flex justify-between items-start border-b border-white/5 pb-3">
+            <span class="text-white/40">Имя</span>
+            <span class="text-white">${state.name}</span>
+          </div>
+          <div class="flex justify-between items-start">
+            <span class="text-white/40">Телефон</span>
+            <span class="text-white">${state.phone}</span>
+          </div>
+          ${state.note || bookNote.value ? `<div class="flex justify-between items-start pt-3 border-t border-white/5"><span class="text-white/40">Пожелания</span><span class="text-white text-right max-w-[60%]">${bookNote.value}</span></div>` : ''}
+        `;
+      }
+
+      function showBookStep(step) {
+        bookStep = step;
+        bookSteps.forEach(s => {
+          const sNum = s.dataset.step;
+          s.classList.toggle('active', sNum === String(step) || (step === 'success' && sNum === 'success'));
+        });
+        stepIndicators.forEach((dot, i) => {
+          dot.classList.toggle('active', i === step);
+          dot.classList.toggle('done', i < step);
+        });
+        if (step === 'success') {
+          stepIndicators.forEach(d => d.classList.remove('active'));
+          bookBack.classList.add('hidden');
+          bookNext.textContent = 'Готово';
+          bookNext.disabled = false;
+          return;
+        }
+        bookBack.classList.toggle('hidden', step === 0);
+        if (step === 3) renderSummary();
+        validateStep();
+      }
+
+      function resetBooking() {
+        state.date = null; state.time = null; state.guests = 2; state.zone = 'main';
+        state.name = ''; state.phone = ''; state.note = '';
+        bookName.value = ''; bookPhone.value = ''; bookNote.value = '';
+        bookPhone.classList.remove('invalid');
+        datePicker.querySelectorAll('.picker-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-checked', 'false'); });
+        timePicker.querySelectorAll('.picker-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-checked', 'false'); });
+        zonePicker.querySelectorAll('.zone-btn').forEach((b, i) => { b.classList.toggle('selected', i === 0); });
+        updateGuests();
+        showBookStep(0);
+      }
+
+      function openModal() {
+        lastFocus = document.activeElement;
+        resetBooking();
+        bookingModal.classList.add('open');
+        bookingModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        bookingModal.classList.remove('open');
+        bookingModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (lastFocus) lastFocus.focus();
+        setTimeout(resetBooking, 400);
+      }
+
+      openBookingBtns.forEach(btn => btn.addEventListener('click', openModal));
+      drawerBookBtn.addEventListener('click', () => { closeMobileNav(); openModal(); });
+      headerBookBtn.addEventListener('click', openModal);
+      modalClose.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', closeModal);
+
+      bookBack.addEventListener('click', () => { if (bookStep > 0) showBookStep(bookStep - 1); });
+
+      bookNext.addEventListener('click', () => {
+        if (bookStep === 'success') { closeModal(); return; }
+        if (bookStep < 3) { showBookStep(bookStep + 1); return; }
+        state.note = bookNote.value.trim();
+        const d = new Date(state.date + 'T12:00:00');
+        successText.innerHTML = `Ждём вас <span class="text-gold-light">${d.getDate()}&nbsp;${MONTHS_FULL[d.getMonth()]}</span> в&nbsp;<span class="text-gold-light">${state.time}</span>. Подтверждение отправим на&nbsp;<span class="text-gold-light">${state.phone}</span>.`;
+        showBookStep('success');
+        if (navigator.vibrate) navigator.vibrate(12);
+      });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          if (bookingModal.classList.contains('open')) closeModal();
+          else closeMobileNav();
+        }
+      });
+
+      let touchStartY = 0;
+      const sheet = bookingModal.querySelector('.modal-sheet');
+      sheet.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+      sheet.addEventListener('touchend', e => {
+        const diff = e.changedTouches[0].clientY - touchStartY;
+        if (diff > 80 && bookStep === 0) closeModal();
+      }, { passive: true });
+
+      buildDatePicker();
+      buildTimePicker();
+      updateGuests();
+      filterMenu('masterpieces');
+    })();
+  </script>
+</body>
+</html>
